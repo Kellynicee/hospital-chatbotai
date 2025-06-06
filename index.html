@@ -6,20 +6,16 @@
   <title>Aisha Hospital Chatbot</title>
 
   <!-- Font Awesome for icons -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
   <!-- AOS Animation CSS -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css"
-    rel="stylesheet"
-  />
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
 
   <style>
     * {
       box-sizing: border-box;
     }
+
     html, body {
       margin: 0;
       padding: 0;
@@ -27,6 +23,10 @@
       background: #f4f6f8;
       scroll-behavior: smooth;
       overflow-x: hidden;
+    }
+
+    body {
+      -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
     }
 
     header {
@@ -67,6 +67,7 @@
       align-items: center;
       justify-content: center;
       background: white;
+      will-change: transform;
     }
 
     .hero-text {
@@ -105,8 +106,9 @@
       width: 100%;
       height: auto;
       border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       display: block;
+      object-fit: cover;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
     section {
@@ -135,6 +137,7 @@
       max-width: 300px;
       width: 100%;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      will-change: transform;
     }
 
     .service-box i {
@@ -162,7 +165,19 @@
       color: white;
     }
 
+    /* ✅ Mobile Optimized (iPhone 13-16 Pro Max etc.) */
     @media (max-width: 768px) {
+      nav {
+        flex-direction: column;
+        padding: 10px 0;
+      }
+
+      nav a {
+        display: block;
+        margin: 6px 0;
+        font-size: 1em;
+      }
+
       .hero {
         flex-direction: column-reverse;
         padding: 30px 15px;
@@ -176,24 +191,12 @@
         font-size: 1em;
       }
 
-      nav {
-        flex-direction: column;
-        padding: 10px;
-      }
-
-      nav a {
-        display: block;
-        margin: 6px 0;
-        font-size: 1em;
-      }
-
       .hero-img {
         max-width: 100%;
       }
     }
   </style>
 </head>
-
 <body>
   <header>
     <h1>Welcome to Aisha Hospital Chatbot</h1>
@@ -270,12 +273,13 @@
 
   <footer>&copy; 2025 Aisha Hospital Chatbot | All Rights Reserved</footer>
 
-  <!-- AOS JS for animations -->
+  <!-- AOS JS -->
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
   <script>
     AOS.init({
-      duration: 800,
-      once: true
+      duration: 600,
+      once: true,
+      easing: 'ease-in-out'
     });
   </script>
 </body>
