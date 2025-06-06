@@ -20,8 +20,12 @@
       * {
         box-sizing: border-box;
       }
+      html,
       body {
         margin: 0;
+        padding: 0;
+        max-width: 100%;
+        overflow-x: hidden;
         font-family: 'Segoe UI', sans-serif;
         background: #f4f6f8;
         scroll-behavior: smooth;
@@ -40,6 +44,7 @@
         top: 0;
         z-index: 1000;
         padding: 10px 0;
+        width: 100%;
       }
       nav a {
         display: inline-block;
@@ -90,7 +95,7 @@
         padding: 10px;
       }
       .hero-img img {
-        max-width: 100%;
+        width: 100%;
         border-radius: 10px;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       }
@@ -145,21 +150,31 @@
         color: white;
       }
 
-      /* Mobile Responsive Styles */
+      /* ✅ Responsive fixes for iPhone 13–16 */
       @media (max-width: 768px) {
+        nav {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          padding: 10px 5px;
+        }
+        nav a {
+          margin: 6px 8px;
+          padding: 10px 12px;
+          font-size: 0.95em;
+        }
         .hero {
           flex-direction: column-reverse;
-          padding: 30px 10px;
+          padding: 30px 15px;
         }
         .hero-text h1 {
-          font-size: 2em;
+          font-size: 1.8em;
         }
         .hero-text p {
           font-size: 1em;
         }
-        nav a {
-          display: block;
-          margin: 8px 0;
+        .hero-img {
+          max-width: 100%;
         }
       }
     </style>
