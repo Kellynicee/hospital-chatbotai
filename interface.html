@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hospital Chatbot</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f7f9;
+        margin: 0;
+        padding: 0;
+      }
+      .chat-container {
+        max-width: 600px;
+        margin: 50px auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        height: 80vh;
+        overflow: hidden;
+      }
+      .chat-box {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        border-bottom: 1px solid #eee;
+      }
+      .chat-message {
+        margin-bottom: 15px;
+      }
+      .bot-message {
+        color: #333;
+        background: #e3f2fd;
+        padding: 10px;
+        border-radius: 8px;
+        max-width: 80%;
+      }
+      .user-message {
+        color: #fff;
+        background: #007bff;
+        padding: 10px;
+        border-radius: 8px;
+        max-width: 80%;
+        align-self: flex-end;
+        margin-left: auto;
+      }
+      .chat-input {
+        display: flex;
+      }
+      .chat-input input {
+        flex: 1;
+        padding: 15px;
+        border: none;
+        border-radius: 0 0 0 10px;
+        outline: none;
+      }
+      .chat-input button {
+        padding: 15px;
+        border: none;
+        background: #007bff;
+        color: white;
+        cursor: pointer;
+        border-radius: 0 0 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="chat-container">
+      <div class="chat-box" id="chat-box">
+        <div class="chat-message bot-message">
+          Hello! I'm Aisha, your health assistant. Describe your symptoms or ask
+          a question.
+        </div>
+      </div>
+      <form class="chat-input" id="chat-form">
+        <input
+          type="text"
+          id="user-input"
+          placeholder="Type your message..."
+          required
+        />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+
+    <script>
+      const chatBox = document.getElementById('chat-box');
+      const chatForm = document.getElementById('chat-form');
+      const userInput = document.getElementById('user-input');
+
+      const responses = {
+        fever:
+          'You may have a fever. Please drink plenty of fluids and consider booking an appointment.',
+        headache:
+          'Headaches can be caused by various factors. Would you like me to suggest a doctor?',
+        cough:
+          "It might be a common cold or something more serious. Let's schedule a visit.",
+        default:
+          "I'm not sure I understand. Please describe your symptoms more clearly.",
+      };
+
+      function addMessage(message, type) {
+        const msg = document.createElement('div');
+        msg.className = `chat-message ${type}-message`;
+        msg.textContent = message;
+        chatBox.appendChild(msg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      function getBotResponse(input) {
+        input = input.toLowerCase();
+        for (let key in responses) {
+          if (input.includes(key)) {
+            return responses[key];
+          }
+        }
+        return responses.default;
+      }
+
+      chatForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const userText = userInput.value.trim();
+        if (!userText) return;
+        addMessage(userText, 'user');
+        const botReply = getBotResponse(userText);
+        setTimeout(() => addMessage(botReply, 'bot'), 500);
+        userInput.value = '';
+      });
+    </script>
+  </body>
+</html>

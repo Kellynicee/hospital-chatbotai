@@ -1,0 +1,132 @@
+<!-- File: seed.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seed Test Data</title>
+    <style>
+      body {
+        font-family: Arial;
+        background: #f4f6f9;
+        text-align: center;
+        padding: 50px;
+      }
+
+      button {
+        padding: 12px 25px;
+        font-size: 16px;
+        margin: 10px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      .load-btn {
+        background: #28a745;
+        color: white;
+      }
+
+      .reset-btn {
+        background: #dc3545;
+        color: white;
+      }
+
+      .note {
+        margin-top: 20px;
+        color: #333;
+        font-size: 14px;
+      }
+
+      .success {
+        margin-top: 30px;
+        color: green;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🌱 Seed Demo Data</h1>
+    <p>Use this to load or clear demo data for chatbot and reports testing.</p>
+
+    <button class="load-btn" onclick="loadDemoData()">Load Demo Data</button>
+    <button class="reset-btn" onclick="clearData()">Reset Data</button>
+
+    <div class="success" id="successMsg"></div>
+
+    <div class="note">
+      Loaded data works in:
+      <br />
+      <strong>chatbot.html</strong>
+      ,
+      <strong>doctor_availability.html</strong>
+      ,
+      <strong>prescriptions.html</strong>
+      ,
+      <strong>appointments.html</strong>
+      <br />
+    </div>
+
+    <script>
+      function loadDemoData() {
+        const doctors = [
+          { name: 'Dr. John', specialty: 'general physician' },
+          { name: 'Dr. Smith', specialty: 'dermatologist' },
+          { name: 'Dr. Jane', specialty: 'cardiologist' },
+          { name: 'Dr. Alex', specialty: 'neurologist' },
+        ];
+
+        const availability = [
+          { doctor: 'Dr. John', date: '2025-06-15', time: '10:00' },
+          { doctor: 'Dr. Smith', date: '2025-06-16', time: '09:30' },
+          { doctor: 'Dr. Jane', date: '2025-06-17', time: '14:00' },
+          { doctor: 'Dr. Alex', date: '2025-06-18', time: '13:00' },
+        ];
+
+        const appointments = [
+          {
+            patient: 'john',
+            doctor: 'Dr. John',
+            date: '2025-06-15',
+            reason: 'Fever and cough',
+          },
+          {
+            patient: 'john',
+            doctor: 'Dr. Smith',
+            date: '2025-06-16',
+            reason: 'Skin rash',
+          },
+        ];
+
+        const prescriptions = [
+          {
+            doctor: 'Dr. John',
+            patient: 'john',
+            date: '2025-06-15',
+            notes: 'Paracetamol 500mg twice daily',
+          },
+          {
+            doctor: 'Dr. Smith',
+            patient: 'john',
+            date: '2025-06-16',
+            notes: 'Antihistamine for rash',
+          },
+        ];
+
+        localStorage.setItem('doctors', JSON.stringify(doctors));
+        localStorage.setItem('availability', JSON.stringify(availability));
+        localStorage.setItem('appointments', JSON.stringify(appointments));
+        localStorage.setItem('prescriptions', JSON.stringify(prescriptions));
+
+        document.getElementById('successMsg').textContent =
+          '✅ Demo data loaded successfully!';
+      }
+
+      function clearData() {
+        localStorage.clear();
+        document.getElementById('successMsg').textContent =
+          '🗑 All localStorage data cleared.';
+      }
+    </script>
+  </body>
+</html>

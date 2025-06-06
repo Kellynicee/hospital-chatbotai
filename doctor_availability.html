@@ -1,0 +1,143 @@
+<!-- File: doctor_availability.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Doctor Availability</title>
+    <style>
+      body {
+        font-family: Arial;
+        background: #eef2f5;
+        margin: 0;
+        padding: 0;
+      }
+
+      nav {
+        background: #007bff;
+        padding: 10px;
+        text-align: center;
+      }
+
+      nav a {
+        color: white;
+        margin-right: 15px;
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      .container {
+        max-width: 400px;
+        margin: 40px auto;
+        padding: 20px;
+      }
+
+      .welcome {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .form-box {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+
+      button {
+        width: 100%;
+        padding: 10px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .success {
+        color: green;
+        margin-top: 10px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav>
+      <a href="doctor_dashboard.html">Dashboard</a>
+      <a href="view_appointments.html">View Appointments</a>
+      <a href="doctor_availability.html">Set Availability</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </nav>
+
+    <div class="container">
+      <div class="welcome">
+        <h2>
+          Welcome,
+          <span id="doctor-name"></span>
+          (Doctor)
+        </h2>
+      </div>
+
+      <div class="form-box">
+        <h3>Set Your Availability</h3>
+        <input type="date" id="availableDate" />
+        <input type="time" id="availableTime" />
+        <button onclick="saveAvailability()">Save Availability</button>
+        <div class="success" id="success-msg"></div>
+      </div>
+    </div>
+
+    <script>
+      const role = localStorage.getItem('role');
+      const username = localStorage.getItem('username');
+
+      if (!username || role !== 'doctor') {
+        window.location.href = 'login.html';
+      }
+
+      document.getElementById('doctor-name').textContent = username;
+
+      function saveAvailability() {
+        const date = document.getElementById('availableDate').value;
+        const time = document.getElementById('availableTime').value;
+        const msg = document.getElementById('success-msg');
+
+        if (!date || !time) {
+          msg.style.color = 'red';
+          msg.textContent = 'Please select both date and time.';
+          return;
+        }
+
+        const availability = {
+          doctor: username,
+          date: date,
+          time: time,
+        };
+
+        let slots = JSON.parse(localStorage.getItem('availability')) || [];
+        slots.push(availability);
+        localStorage.setItem('availability', JSON.stringify(slots));
+
+        msg.style.color = 'green';
+        msg.textContent = 'Availability saved successfully!';
+
+        document.getElementById('availableDate').value = '';
+        document.getElementById('availableTime').value = '';
+      }
+
+      function logout() {
+        localStorage.clear();
+        window.location.href = 'login.html';
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Patient History</title>
+    <style>
+      body {
+        font-family: Arial;
+        background: #eef2f5;
+        margin: 0;
+      }
+
+      nav {
+        background: #007bff;
+        padding: 10px;
+        text-align: center;
+      }
+
+      nav a {
+        color: white;
+        margin-right: 15px;
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 30px auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h2,
+      h3 {
+        text-align: center;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #007bff;
+        color: white;
+      }
+
+      button {
+        padding: 10px 15px;
+        background: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+
+      .filters input {
+        width: calc(33.33% - 10px);
+        margin-right: 5px;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <nav>
+      <a href="doctor_dashboard.html">Dashboard</a>
+      <a href="view_appointments.html">Appointments</a>
+      <a href="doctor_availability.html">Availability</a>
+      <a href="prescriptions.html">Prescriptions</a>
+      <a href="view_patient_history.html">Patient History</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="container">
+      <h2>View Patient History</h2>
+
+      <div class="filters">
+        <input
+          type="text"
+          id="patientName"
+          placeholder="Patient username"
+          oninput="loadPatientHistory()"
+        />
+        <input type="date" id="startDate" onchange="loadPatientHistory()" />
+        <input type="date" id="endDate" onchange="loadPatientHistory()" />
+        <input
+          type="text"
+          id="doctorFilter"
+          placeholder="Doctor name"
+          oninput="loadPatientHistory()"
+        />
+      </div>
+
+      <button onclick="downloadPDF()">Download as PDF</button>
+
+      <div id="report">
+        <h3>Appointments</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody id="appointmentTable"></tbody>
+        </table>
+
+        <h3>Prescriptions</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Doctor</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="prescriptionTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- HTML2PDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+      const role = localStorage.getItem('role');
+      const username = localStorage.getItem('username');
+
+      if (!username || role !== 'doctor') {
+        window.location.href = 'login.html';
+      }
+
+      function logout() {
+        localStorage.clear();
+        window.location.href = 'login.html';
+      }
+
+      function loadPatientHistory() {
+        const patient = document
+          .getElementById('patientName')
+          .value.trim()
+          .toLowerCase();
+        const start = new Date(
+          document.getElementById('startDate').value || '2000-01-01'
+        );
+        const end = new Date(
+          document.getElementById('endDate').value || '2100-12-31'
+        );
+        const doctorFilter = document
+          .getElementById('doctorFilter')
+          .value.trim()
+          .toLowerCase();
+
+        const appointments =
+          JSON.parse(localStorage.getItem('appointments')) || [];
+        const prescriptions =
+          JSON.parse(localStorage.getItem('prescriptions')) || [];
+
+        const apptTable = document.getElementById('appointmentTable');
+        const rxTable = document.getElementById('prescriptionTable');
+
+        apptTable.innerHTML = '';
+        rxTable.innerHTML = '';
+
+        // Filter appointments
+        const apptFiltered = appointments.filter(
+          (a) =>
+            a.patient === patient &&
+            new Date(a.date) >= start &&
+            new Date(a.date) <= end
+        );
+
+        if (apptFiltered.length === 0) {
+          apptTable.innerHTML =
+            '<tr><td colspan="2" style="text-align:center;">No appointments found.</td></tr>';
+        } else {
+          apptFiltered.forEach((a) => {
+            apptTable.innerHTML += `<tr><td>${a.date}</td><td>${
+              a.reason || 'N/A'
+            }</td></tr>`;
+          });
+        }
+
+        // Filter prescriptions
+        const rxFiltered = prescriptions.filter(
+          (p) =>
+            p.patient === patient &&
+            new Date(p.date) >= start &&
+            new Date(p.date) <= end &&
+            (!doctorFilter || p.doctor.toLowerCase().includes(doctorFilter))
+        );
+
+        if (rxFiltered.length === 0) {
+          rxTable.innerHTML =
+            '<tr><td colspan="3" style="text-align:center;">No prescriptions found.</td></tr>';
+        } else {
+          rxFiltered.forEach((p) => {
+            rxTable.innerHTML += `<tr><td>${p.date}</td><td>${p.doctor}</td><td>${p.notes}</td></tr>`;
+          });
+        }
+      }
+
+      function downloadPDF() {
+        const element = document.getElementById('report');
+        html2pdf().from(element).save('patient-history.pdf');
+      }
+    </script>
+  </body>
+</html>
